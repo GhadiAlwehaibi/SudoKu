@@ -4,12 +4,11 @@ import pickle
 from tkinter import *
 from tkinter.tix import FileSelectBox, Tk
 random.seed(time.time())
-class SudokuBoard :
+class SudokuBoard:
  def __init__(self):
   self.clear()
  def clear(self):
-  self.grid = [[0 for x in range(9)] for
-y in range(9)]
+  self.grid = [[0 for x in range(9)] for y in range(9)]
   self.locked = []
  def get_row(self, row):
   return self.grid[row]
@@ -26,12 +25,13 @@ y in range(9)]
    else:
     return 6
   return
-  [y[make_index(col):make_index(col) + 3]
-   for y in
+[y[make_index(col):make_index(col)+3]
+for y in
 
-  self.grid[make_index(row):make_index(row) + 3]]
-def set(self, col, row, v, lock= False):
- if v == self.grid[row][col] or(col, row) in self.locked:
+self.grid[make_index(row):make_index(row)+3]]
+def set(self, col, row, v, lock=False):
+ if v == self.grid[row][col] or (col,
+row) in self.locked:
   return
  for v2 in self.get_row(row):
   if v == v2:
@@ -41,20 +41,21 @@ def set(self, col, row, v, lock= False):
    raise ValueError()
 
 
- for y in self.get_nearest_region(col, row):
+ for y in self.get_nearest_region(col,
+row):
   for x in y:
    if v == x:
     raise ValueError()
  self.grid[row][col] = v
  if lock:
-   self.locked.append((col, row))
+  self.locked.append((col, row))
  def get(self, col, row):
   return self.grid[row][col]
  def __str__(self):
   strings = []
  newline_counter = 0
  for y in self.grid:
- strings.append("%d%d%d%d%d%d %d%d%d" % tuple(y))
+  strings.append("%d%d%d%d%d%d %d%d%d" % tuple(y))
  newline_counter += 1
  if newline_counter == 3:
   strings.append('')
@@ -71,57 +72,60 @@ def sudogen_1(board):
     return
  i = 0
  while i in added:
-i = random.randint(1, 9)
+  i = random.randint(1, 9)
  try:
-  board.set(random.randint(x,
-x + 2), random.randint(y, y + 2), i, lock= True)
-    except ValueError:
-  print("Board rule violation, this shouldn't happen!")
+  board.set(random.randint(x,x+2), random.randint(y, y+2), i,lock=True)
+ except ValueError:
+  print("Board rule violation,this shouldn't happen!")
  added.append(i)
 class SudokuGUI(Frame):
-  board_generators = { "SudoGen v1 (Very Easy)":sudogen_1}
-board_generator = staticmethod(sudogen_1)
+ board_generators = {"SudoGen v1(Very Easy)":sudogen_1}
+ board_generator = staticmethod(sudogen_1)
 
 
-  def new_game(self):
-   self.board.clear()
-   self.board_generator(self.board)
-   self.sync_board_and_canvas()
-  def make_modal_window(self, title):
-   window = Toplevel()
-   window.title(title)
-   window.attributes('-topmost', True)
-   window.grab_set()
-   window.focus_force()
-   return window
-  def query_board(self):
-   window = self.make_modal_window("Set Board Algorithm")
-   scroll = Scrollbar(window)
-   scroll.pack(side = 'right', fill = 'y')
-   listbox = Listbox(window,
-yscrollcommand = scroll.set)
+ def new_game(self):
+  self.board.clear()
+  self.board_generator(self.board)
+  self.sync_board_and_canvas()
+ def make_modal_window(self, title):
+  window = Toplevel()
+  window.title(title)
+  window.attributes('-topmost', True)
+  window.grab_set()
+  window.focus_force()
+  return window
+ def query_board(self):
+  window =self.make_modal_window("Set Board Algorithm")
+ scroll = Scrollbar(window)
+ scroll.pack(side='right', fill='y')
+ listbox = Listbox(window,
+yscrollcommand=scroll.set)
 
-scroll.config(command = listbox.yview)
+scroll.config(command=listbox.yview)
 
 
 bframe = Frame(window)
-for s in self.board_generators.keys():
- listbox.insert(-1, s)
- def make_grid(self):
-  c = Canvas(self, width = '512', height = '512', bg = '#F0DBE1')
- c.pack(side = 'top', fill = 'both', expand = '1')
- self.rects = [[None for x in range(9)] for y in range(9)]
- self.handles = [[None for x in range(9)] for y in range(9)]
- rsize = 512 / 9
- guidesize = 512 / 3
+for s in self.board_generators.keys(): listbox.insert(-1, s)
+def make_grid(self):
+ c = Canvas(self, width='512',
+height='512', bg='#F0DBE1')
+ c.pack(side='top', fill='both',
+expand='1')
+ self.rects = [[None for x in
+range(9)] for y in range(9)]
+ self.handles = [[None for x in
+range(9)] for y in range(9)]
+ rsize = 512/9
+ guidesize = 512/3
  for y in range(9):
-  for x in range(9): (xr, yr) = (x * guidesize, y * guidesize)
- self.rects[y][x] = c.create_rectangle(xr, yr, xr + guidesize, yr + guidesize, width = 3, outline = '#FFFFFF')
+  for x in range(9):
+   (xr, yr) = (x*guidesize,y*guidesize)
+ self.rects[y][x] = c.create_rectangle(xr, yr, xr+guidesize, yr+guidesize, width=3, outline='#FFFFFF')
 
 
-(xr, yr) = (x * rsize, y * rsize)
-r = c.create_rectangle(xr, yr, xr + rsize, yr + rsize, outline = '#FFFFFF')
-t = c.create_text(xr + rsize / 2, yr + rsize / 2, text = "SUDO", font = "System 15 bold")
+(xr, yr) = (x*rsize, y*rsize)
+            r = c.create_rectangle(xr, yr, xr+rsize, yr+rsize, outline='#FFFFFF')
+            t = c.create_text(xr+rsize/2, yr+rsize/2, text="SUDO", font="System 15 bold")
 self.handles[y][x] = (r, t)
 self.canvas = c
 self.sync_board_and_canvas()
@@ -131,16 +135,17 @@ def sync_board_and_canvas(self):
   for x in range(9):
    if g[y][x] != 0:
 
-    self.canvas.itemconfig(self.handles[y][x][1], fill = '#A05D70', text = str(g[y][x]))
+    self.canvas.itemconfig(self.handles[y][x][1], fill='#A05D70', text=str(g[y][x]))
  else:
 
-    self.canvas.itemconfig(self.handles[y][x][1], fill = '#A05D70', text = ' ')
+   self.canvas.itemconfig(self.handles[y][x][1], fill='#A05D70', text=' ')
 
  def canvas_click(self, event):
-  print("Click! (%d,%d)" % (event.x, event.y))
+  print("Click! (%d,%d)" % (event.x,
+event.y))
  self.canvas.focus_set()
- rsize = 512 / 9
- (x, y) = (0, 0)
+ rsize = 512/9
+ (x,y) = (0, 0)
  if event.x > rsize:
   x = int(event.x/rsize)
  if event.y > rsize:
@@ -151,31 +156,28 @@ def sync_board_and_canvas(self):
  self.current = (x,y)
  def canvas_key(self, event):
   print("Clack! (%s)" % (event.char))
-  if event.char.isdigit() and int(event.char) > 0 and self.current:
-   (x,y) = self.current
- try:
-   self.board.set(x, y,
+ if event.char.isdigit() and int(event.char) > 0 and self.current:
+       (x,y) = self.current
+       try:
+        self.board.set(x, y,
 int(event.char))
-   self.sync_board_and_canvas()
+        self.sync_board_and_canvas()
 
- except ValueError:
-  pass
-  def __init__(self, master, board):
-   Frame.__init__(self, master)
-   if master:
+       except ValueError:
+        pass
+def __init__(self, master, board):
+ Frame.__init__(self, master)
+ if master:
     master.title("SudokuProject")
  self.board = board
  self.board_generator(board)
  bframe = Frame(self)
- self.ng = Button(bframe,
-command = self.new_game, text = "New Game", bg = '#CD95A5')
- self.ng.pack(side = 'left', fill = 'x', expand = '1')
- bframe.pack(side = 'bottom', fill = 'x', expand = '1')
+ self.ng = Button(bframe,command=self.new_game, text="New Game", bg='#CD95A5')
+ self.ng.pack(side='left', fill='x', expand='1')
+ bframe.pack(side='bottom', fill='x', expand='1')
  self.make_grid()
- self.canvas.bind("<Button>",
-self.canvas_click)
- self.canvas.bind("<Key>",
-self.canvas_key)
+ self.canvas.bind("<Button>", self.canvas_click)
+ self.canvas.bind("<Key>", self.canvas_key)
 
 
  self.current = None
